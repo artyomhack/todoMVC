@@ -28,16 +28,19 @@
         <br/>
         <br/>
         <div class="tasks">
-            <ul th:each="task : ${tasks}">
-                <li>
-                   <span th:text="${task.getTitle()}"></span>
-                    <ul>
-                        <li>
-                            <span th:text="${task.getDescription()}"></span>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+            <form method="POST" th:action="">
+            <h3>Your tasks</h3>
+            <table>
+                <td>
+                    <th:block th:each="task : ${tasks}">
+                        <input type="checkbox" name="title" th:value="${task.id}">
+                        <label th:text="${task.title}"></label>
+                        <p th:text="'Description: ' + ${task.description}"></p>
+                        </br>
+                    </th:block>
+                </td>
+            </table>
+            </form>
         </div>
 
     </div>

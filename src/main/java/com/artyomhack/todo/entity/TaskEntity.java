@@ -2,7 +2,6 @@ package com.artyomhack.todo.entity;
 
 import com.artyomhack.todo.model.task.TaskRequest;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.HashSet;

@@ -1,18 +1,15 @@
 package com.artyomhack.todo.service.task;
 
 import com.artyomhack.todo.entity.TaskEntity;
-import com.artyomhack.todo.entity.UserEntity;
 import com.artyomhack.todo.model.task.TaskData;
 import com.artyomhack.todo.model.task.TaskItem;
 import com.artyomhack.todo.model.task.TaskRequest;
 import com.artyomhack.todo.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service

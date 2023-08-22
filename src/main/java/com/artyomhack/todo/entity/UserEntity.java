@@ -74,8 +74,6 @@ public class UserEntity {
     }
 
     public void addTask(TaskEntity entity) {
-        if (entity.getUsers() == null) entity.setUsers(new HashSet<>());
         this.tasks.add(entity);
-        entity.getUsers().add(this);
     }
 }

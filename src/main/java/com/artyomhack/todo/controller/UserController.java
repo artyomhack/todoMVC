@@ -1,5 +1,6 @@
 package com.artyomhack.todo.controller;
 
+import com.artyomhack.todo.model.task.TaskData;
 import com.artyomhack.todo.model.task.TaskRequest;
 import com.artyomhack.todo.model.user.UserData;
 import com.artyomhack.todo.model.user.UserRequest;
@@ -15,11 +16,9 @@ import org.springframework.web.servlet.ModelAndView;
 public class UserController {
 
     private final UserService userService;
-    private final TaskService taskService;
 
-    public UserController(UserService userService, TaskService taskService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.taskService = taskService;
     }
 
     @GetMapping("/create")
@@ -57,8 +56,8 @@ public class UserController {
 
     @PostMapping("task/create/{id:[0-9]}")
     public String addTaskUserById(@PathVariable("id") String id, @ModelAttribute(name = "task") TaskRequest request) {
-        var task = taskService.create(request);
-        var user = userService.addTaskByUserId(Long.valueOf(id), task);
+        request.setId(null);
+        var user = userService.addTaskByUserId(Long.valueOf(id), request);
         return "redirect:/user/" + user.getId();
     }
 
