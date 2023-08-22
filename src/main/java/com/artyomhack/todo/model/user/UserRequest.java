@@ -10,7 +10,8 @@ import java.util.List;
 @AllArgsConstructor
 public class UserRequest {
     private Long id;
-    private String fullName;
+    private String firstName;
+    private String lastName;
     private String email;
     private String passwordHash;
     private List<TaskItem> tasks;

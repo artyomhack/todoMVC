@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -25,19 +26,16 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskData create(TaskRequest request) {
-        return toData(taskRepository.save(convertFromRequest(request)));
+        return toData(taskRepository.save(TaskEntity.of(request)));
     }
 
     @Override
     public TaskData update(Long id, TaskRequest request) {
         System.out.println("REQUEST:" + request.getTitle() + " " + request.getDescription());
         var data = taskRepository.findById(id).map(it -> {
-            var title = it.getTitle();
-            var description = it.getDescription();
-            if (!title.equals(request.getTitle())) title = request.getTitle();
-            if (!description.equals(request.getDescription())) description = request.getDescription();
-            var entity = new TaskEntity(request.getId(), title, description, it.getUsers());
-            return taskRepository.save(entity);
+            var title = Optional.of(request.getTitle()).orElse(it.getTitle());
+            var description = Optional.of(request.getDescription()).orElse(it.getDescription());
+            return taskRepository.save(new TaskEntity(id, title, description, it.getUsers()));
         }).orElse(null);
         //Catch exception.
         if (Objects.isNull(data)) throw new IllegalArgumentException();
@@ -68,17 +66,6 @@ public class TaskServiceImpl implements TaskService {
 
         }
         return false;
-    }
-
-    private TaskEntity convertFromRequest(TaskRequest request) {
-        if (Objects.isNull(request.getUsers())) request.setUsers(new HashSet<>());
-        return new TaskEntity(
-                request.getId(),
-                request.getTitle(),
-                request.getDescription(),
-                request.getUsers().stream().map(it -> new UserEntity(it.getId(), it.getEmail()))
-                        .collect(Collectors.toSet())
-        );
     }
 
     private TaskData toData(TaskEntity entity) {

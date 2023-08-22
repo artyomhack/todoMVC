@@ -8,6 +8,7 @@ import com.artyomhack.todo.model.task.TaskRequest;
 import com.artyomhack.todo.model.user.UserData;
 import com.artyomhack.todo.model.user.UserItem;
 import com.artyomhack.todo.model.user.UserRequest;
+import com.artyomhack.todo.repository.TaskRepository;
 import com.artyomhack.todo.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,24 +20,26 @@ import java.util.stream.StreamSupport;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
+    private final TaskRepository taskRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, TaskRepository taskRepository) {
         this.userRepository = userRepository;
+        this.taskRepository = taskRepository;
     }
 
     @Override
     public UserData create(UserRequest request) {
-        return toData(userRepository.save(convertFromRequest(request)));
+        return toData(userRepository.save(UserEntity.of(request)));
     }
 
     @Override
     public UserData update(Long id, UserRequest request) {
         var data = userRepository.findById(id).map(it -> {
-            var firstName = Optional.of(request.getFullName().split(" ")[0]).orElse(it.getFirstName());
-            var lastName = Optional.of(request.getFullName().split(" ")[1]).orElse(it.getLastName());
+            var firstName = Optional.of(request.getFirstName()).orElse(it.getFirstName());
+            var lastName = Optional.of(request.getLastName()).orElse(it.getLastName());
             var email = Optional.of(request.getEmail()).orElse(it.getEmail());
             var passwordHash = Optional.of(request.getPasswordHash()).orElse(it.getPasswordHash());
-            return new UserEntity(id, firstName, lastName, email, passwordHash);
+            return userRepository.save(new UserEntity(id, firstName, lastName, email, passwordHash));
         }).orElse(null);
         //Catch exception.
         if (Objects.isNull(data)) throw new IllegalArgumentException();
@@ -73,34 +76,30 @@ public class UserServiceImpl implements UserService{
         return false;
     }
 
-//    private UserEntity convertFromRequest(UserRequest request) {
-//        var firstName = request.getFullName().split(" ")[0];
-//        var lastName = request.getFullName().split(" ")[1];
-//        if (Objects.isNull(request.getTasks())) request.setTasks(new ArrayList<>());
-//        return new UserEntity(
-//                request.getId(),
-//                firstName,
-//                lastName,
-//                request.getNumber(),
-//                request.getTasks().stream()
-//                        .map(it -> new TaskEntity(it.getId(), it.getTitle(),it.getDescription()))
-//                        .toList()
-//        );
-//    }
-//
-//    private UserData toData(UserEntity entity) {
-//        return new UserData(
-//                entity.getId(),
-//                entity.getFirstName() + " " + entity.getLastName(),
-//                entity.getNumber()
-//        );
-//    }
-//
-//    private UserItem toItem(UserEntity entity) {
-//        return new UserItem(
-//                entity.getId(),
-//                entity.getLastName() + " " + entity.getLastName(),
-//                entity.getNumber()
-//        );
-//    }
+    public UserData addTaskByUserId(Long id, TaskData taskData) {
+        var user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        var task = new TaskEntity(taskData.getId(), taskData.getTitle(), taskData.getDescription());
+        user.addTask(task);
+        user = userRepository.save(user);
+        return toData(user);
+    }
+
+    private UserData toData(UserEntity entity) {
+        if (Objects.isNull(entity.getTasks())) entity.setTasks(new ArrayList<>());
+        return new UserData(
+                 entity.getId(),
+                 entity.getFirstName() + " " + entity.getLastName(),
+                 entity.getEmail(),
+                 entity.getTasks().stream().map(it ->
+                         new TaskItem(it.getId(), it.getTitle(), it.getDescription())
+                 ).toList()
+         );
+    }
+
+    private UserItem toItem(UserEntity entity) {
+        return new UserItem(
+                entity.getId(),
+                entity.getEmail()
+        );
+    }
 }

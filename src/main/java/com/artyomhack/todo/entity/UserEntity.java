@@ -1,11 +1,13 @@
 package com.artyomhack.todo.entity;
 
+import com.artyomhack.todo.model.user.UserRequest;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 @Entity(name = "usr")
 @Data
@@ -25,8 +27,8 @@ public class UserEntity {
     )
     private List<TaskEntity> tasks = new ArrayList<>();
 
-    public UserEntity(Long id, String firstName, String lastName, String number, List<TaskEntity> tasks) {
-        this(id, firstName, lastName, number);
+    public UserEntity(Long id, String firstName, String lastName, String email, String passwordHash, List<TaskEntity> tasks) {
+        this(id, firstName, lastName, email, passwordHash);
         this.tasks = tasks;
     }
 
@@ -55,5 +57,25 @@ public class UserEntity {
     }
 
     public UserEntity() {
+    }
+
+    public static UserEntity of(UserRequest request) {
+        if (Objects.isNull(request.getTasks())) request.setTasks(new ArrayList<>());
+        return new UserEntity(
+                request.getId(),
+                request.getFirstName(),
+                request.getLastName(),
+                request.getEmail(),
+                request.getPasswordHash(),
+                request.getTasks().stream().map(it ->
+                        new TaskEntity(it.getId(), it.getTitle(), it.getDescription())
+                ).toList()
+        );
+    }
+
+    public void addTask(TaskEntity entity) {
+        if (entity.getUsers() == null) entity.setUsers(new HashSet<>());
+        this.tasks.add(entity);
+        entity.getUsers().add(this);
     }
 }

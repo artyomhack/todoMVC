@@ -1,11 +1,14 @@
 package com.artyomhack.todo.entity;
 
+import com.artyomhack.todo.model.task.TaskRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity(name = "task")
 @Data
@@ -47,4 +50,14 @@ public class TaskEntity {
 
     }
 
+    public static TaskEntity of(TaskRequest request) {
+        if (Objects.isNull(request.getUsers())) request.setUsers(new HashSet<>());
+        return new TaskEntity(
+                request.getId(),
+                request.getTitle(),
+                request.getDescription(),
+                request.getUsers().stream().map(it -> new UserEntity(it.getId(), it.getEmail()))
+                        .collect(Collectors.toSet())
+        );
+    }
 }

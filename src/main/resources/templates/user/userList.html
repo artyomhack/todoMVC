@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User list</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" type="text/css"/>
+</head>
+<body>
+    <table class="table">
+        <tr>
+            <td>Email</td>
+            <td>Список задач</td>
+            <td>Изменить</td>
+            <td>Удалить</td>
+        </tr>
+        <tr th:each="usr:${users}">
+            <td th:text="${usr.getEmail()}"></td>
+            <td>
+                <form method="post" th:action="@{/task/list/{id}(id=${usr.getId()})}">
+                    <button class="floating-button-a" type="submit">Задачи</button>
+                </form>
+            </td>
+            <td>
+                <a class="floating-button-a" th:href="@{/user/edit/{id}(id=${usr.getId()})}">Изменить</a>
+            </td>
+            <td>
+                <a class="floating-button-a" th:href="@{/user/delete/{id}(id=${usr.getId()})}">Удалить</a>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
