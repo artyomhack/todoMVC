@@ -76,12 +76,22 @@ public class UserServiceImpl implements UserService{
         return false;
     }
 
-    public UserData addTaskByUserId(Long id, TaskRequest taskRequest) {
-        return userRepository.findById(id).map(it -> {
+    public UserData addTaskByUserId(Long userId, TaskRequest taskRequest) {
+        return userRepository.findById(userId).map(it -> {
             var task = taskRepository.save(TaskEntity.of(taskRequest));
             it.addTask(task);
             return toData(userRepository.save(it));
         }).orElseThrow(IllegalArgumentException::new);
+    }
+
+    public void deleteTaskByIdFromUserById(Long taskId, Long userId) {
+        var user = userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
+        var task = taskRepository.findById(taskId).orElseThrow(IllegalArgumentException::new);
+
+        user.removeTask(task);
+        userRepository.save(user);
+
+        taskRepository.deleteById(task.getId());
     }
 
     private UserData toData(UserEntity entity) {

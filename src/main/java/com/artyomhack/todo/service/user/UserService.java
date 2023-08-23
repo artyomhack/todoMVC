@@ -1,6 +1,5 @@
 package com.artyomhack.todo.service.user;
 
-import com.artyomhack.todo.model.task.TaskData;
 import com.artyomhack.todo.model.task.TaskRequest;
 import com.artyomhack.todo.model.user.UserData;
 import com.artyomhack.todo.model.user.UserItem;
@@ -17,4 +16,5 @@ public interface UserService {
     UserData fetchById(Long id);
     boolean deleteById(Long id);
     UserData addTaskByUserId(Long id, TaskRequest taskRequest);
+    void deleteTaskByIdFromUserById(Long taskId, Long userId);
 }

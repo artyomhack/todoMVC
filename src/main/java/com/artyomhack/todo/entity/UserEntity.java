@@ -76,4 +76,9 @@ public class UserEntity {
     public void addTask(TaskEntity entity) {
         this.tasks.add(entity);
     }
+
+    public List<TaskEntity> removeTask(TaskEntity entity) {
+        if (!this.tasks.isEmpty()) tasks.remove(entity);
+        return this.tasks;
+    }
 }
