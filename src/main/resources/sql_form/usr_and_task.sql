@@ -1,7 +1,8 @@
 CREATE TABLE task (
     id SERIAL NOT NULL PRIMARY KEY,
     title VARCHAR(255),
-    description TEXT
+    description TEXT,
+    date DATE
 );
 
 CREATE TABLE usr (

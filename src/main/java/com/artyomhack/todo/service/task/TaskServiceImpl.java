@@ -28,15 +28,14 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskData update(Long id, TaskRequest request) {
-        System.out.println("REQUEST:" + request.getTitle() + " " + request.getDescription());
         var data = taskRepository.findById(id).map(it -> {
             var title = Optional.of(request.getTitle()).orElse(it.getTitle());
             var description = Optional.of(request.getDescription()).orElse(it.getDescription());
-            return taskRepository.save(new TaskEntity(id, title, description, it.getUsers()));
+            var date = Optional.of(request.getDate()).orElse(it.getDate());
+            return taskRepository.save(new TaskEntity(id, title, description, date, it.getUsers()));
         }).orElse(null);
         //Catch exception.
         if (Objects.isNull(data)) throw new IllegalArgumentException();
-        System.out.println("DATA: " + data.getTitle() + " " + data.getDescription());
         return toData(data);
     }
 
@@ -69,7 +68,8 @@ public class TaskServiceImpl implements TaskService {
         return new TaskData(
                 entity.getId(),
                 entity.getTitle(),
-                entity.getDescription()
+                entity.getDescription(),
+                entity.getDate()
         );
     }
 
@@ -77,7 +77,8 @@ public class TaskServiceImpl implements TaskService {
         return new TaskItem(
                 entity.getId(),
                 entity.getTitle(),
-                entity.getDescription()
+                entity.getDescription(),
+                entity.getDate()
         );
     }
 }

@@ -100,7 +100,8 @@ public class UserServiceImpl implements UserService{
                  entity.getFirstName() + " " + entity.getLastName(),
                  entity.getEmail(),
                  entity.getTasks().stream().map(it ->
-                         new TaskItem(it.getId(), it.getTitle(), it.getDescription())
+                         new TaskItem(it.getId(), it.getTitle(),
+                                      it.getDescription(), it.getDate())
                  ).toList()
          );
     }

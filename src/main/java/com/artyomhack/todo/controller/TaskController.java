@@ -68,6 +68,7 @@ public class TaskController {
         model.getModelMap().addAttribute("id", data.getId());
         model.getModelMap().addAttribute("title", data.getTitle());
         model.getModelMap().addAttribute("description", data.getDescription());
+        model.getModelMap().addAttribute("date", data.getDate());
         return model;
     }
 }

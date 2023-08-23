@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -50,6 +51,13 @@ public class UserController {
         return "user/userList";
     }
 
+//    @GetMapping("/task/create/{id:[0-9]}")
+//    public String showAddTaskUserById(@PathVariable(name = "id") String id, Model model) {
+//        var user = userService.fetchById(Long.valueOf(id));
+//        model.addAttribute("user", user);
+//        return "/task/taskForm";
+//    }
+
     @GetMapping("/task/create/{id:[0-9]}")
     public String showAddTaskUserById(@PathVariable(name = "id") String id, Model model) {
         var user = userService.fetchById(Long.valueOf(id));
@@ -65,8 +73,7 @@ public class UserController {
     }
 
     @PostMapping("/task/delete/{id:[0-9]}")
-    public String removeSelectTask(@RequestParam("selectTask")List<String> taskIds,
-                                   @PathVariable(name = "id") String userId) {
+    public String removeSelectTask(@RequestParam("selectTask")List<String> taskIds, @PathVariable(name = "id") String userId) {
         taskIds.forEach(taskId-> userService.deleteTaskByIdFromUserById(
                 Long.valueOf(taskId),
                 Long.valueOf(userId))

@@ -3,7 +3,10 @@ package com.artyomhack.todo.entity;
 import com.artyomhack.todo.model.task.TaskRequest;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -17,7 +20,8 @@ public class TaskEntity {
     private Long id;
     private String title;
     private String description;
-
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private LocalDateTime date;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "usr_task",
@@ -26,9 +30,13 @@ public class TaskEntity {
     )
     private Set<UserEntity> users = new HashSet<>();
 
-    public TaskEntity(Long id, String title, String description, Set<UserEntity> users) {
-        this(id, title, description);
+    public TaskEntity(Long id, String title, String description, LocalDateTime date, Set<UserEntity> users) {
+        this(id,title,description, date);
         this.users = users;
+    }
+    public TaskEntity(Long id, String title, String description, LocalDateTime date) {
+        this(id,title,description);
+        this.date = date;
     }
 
     public TaskEntity(Long id, String title, String description) {
@@ -55,6 +63,7 @@ public class TaskEntity {
                 request.getId(),
                 request.getTitle(),
                 request.getDescription(),
+                request.getDate(),
                 request.getUsers().stream().map(it -> new UserEntity(it.getId(), it.getEmail()))
                         .collect(Collectors.toSet())
         );
