@@ -20,7 +20,7 @@ public class TaskEntity {
     private Long id;
     private String title;
     private String description;
-    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime date;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
