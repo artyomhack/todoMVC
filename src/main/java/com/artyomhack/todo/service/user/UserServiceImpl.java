@@ -2,7 +2,6 @@ package com.artyomhack.todo.service.user;
 
 import com.artyomhack.todo.entity.TaskEntity;
 import com.artyomhack.todo.entity.UserEntity;
-import com.artyomhack.todo.model.task.TaskData;
 import com.artyomhack.todo.model.task.TaskItem;
 import com.artyomhack.todo.model.task.TaskRequest;
 import com.artyomhack.todo.model.user.UserData;

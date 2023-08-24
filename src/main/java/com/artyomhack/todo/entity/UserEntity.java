@@ -1,11 +1,11 @@
 package com.artyomhack.todo.entity;
 
+import com.artyomhack.todo.common.value.core.type.EmailValue;
 import com.artyomhack.todo.model.user.UserRequest;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,7 +17,7 @@ public class UserEntity {
     private Long id;
     private String firstName;
     private String lastName;
-    private String email;
+    private EmailValue email;
     private String passwordHash;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -27,17 +27,17 @@ public class UserEntity {
     )
     private List<TaskEntity> tasks = new ArrayList<>();
 
-    public UserEntity(Long id, String firstName, String lastName, String email, String passwordHash, List<TaskEntity> tasks) {
+    public UserEntity(Long id, String firstName, String lastName, EmailValue email, String passwordHash, List<TaskEntity> tasks) {
         this(id, firstName, lastName, email, passwordHash);
         this.tasks = tasks;
     }
 
-    public UserEntity(Long id, String firstName, String lastName, String email, String passwordHash) {
+    public UserEntity(Long id, String firstName, String lastName, EmailValue email, String passwordHash) {
         this(id, firstName, lastName, email);
         this.passwordHash = passwordHash;
     }
 
-    public UserEntity(Long id, String firstName, String lastName, String email) {
+    public UserEntity(Long id, String firstName, String lastName, EmailValue email) {
         this(id, firstName, lastName);
         this.email = email;
     }
