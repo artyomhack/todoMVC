@@ -1,4 +1,4 @@
-#Packages
-
 .idea
 target
+**/dist
+**/out

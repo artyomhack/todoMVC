@@ -85,7 +85,7 @@ public class UserController {
         var model = new ModelAndView();
         if (!user.getTasks().isEmpty())
             model.getModelMap().addAttribute("tasks", user.getTasks());
-        model.getModelMap().addAttribute("userId", user.getId());
+        model.getModelMap().addAttribute("id", user.getId());
         model.getModelMap().addAttribute("fullName", user.getFullName());
         model.getModelMap().addAttribute("email", user.getEmail());
         return model;
