@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tasks</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" type="text/css"/>
+</head>
+<body>
+<div class="menu">
+    <div>
+        <table class="table">
+            <tr>
+                <td>Title</td>
+                <td>Description</td>
+            </tr>
+            <tr th:each="task:${tasks}">
+                <td th:text="${task.getTitle()}"></td>
+                <td th:text="${task.getDescription()}">
+                </td>
+                <td><a class="floating-button-a" th:href="@{/task/edit/{id}(id=${task.getId()})}">Изменить</a></td>
+                <td><a class="floating-button-a" th:href="@{/task/delete/{id}(id=${task.getId})}">Удалить</a></td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <a class="floating-button-a" href="/task/create">Create task</a>
+        <a class="floating-button-a" href="/menu" >Menu</a>
+    </div>
+</div>
+</body>
+</html>

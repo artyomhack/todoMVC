@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Task info</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" type="text/css"/>
+</head>
+<body>
+    <div class="menu">
+        <h4 style="text-align: center" th:text="'Task: ' + ${title}"></h4>
+        <p style="text-align: center" th:text="'Description: ' + ${description}"></p>
+        <a class="floating-button-a" th:href="@{/task/edit/{id}(id=${id})}">edit</a>
+        <a class="floating-button-a" th:href="@{/task/delete/{id}(id=${id})}">
+            clear
+        </a>
+    </div>
+</body>
+</html>js
