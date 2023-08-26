@@ -6,6 +6,7 @@ import com.artyomhack.todo.model.user.UserItem;
 import com.artyomhack.todo.model.user.UserRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -17,4 +18,6 @@ public interface UserService {
     boolean deleteById(Long id);
     UserData addTaskByUserId(Long id, TaskRequest taskRequest);
     void deleteTaskByIdFromUserById(Long taskId, Long userId);
+    UserData findByUsername(String username);
+    boolean existsByEmail(String email);
 }

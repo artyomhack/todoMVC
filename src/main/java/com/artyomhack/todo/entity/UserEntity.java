@@ -1,5 +1,6 @@
 package com.artyomhack.todo.entity;
 
+import com.artyomhack.todo.entity.enums.Role;
 import com.artyomhack.todo.model.user.UserRequest;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -7,6 +8,7 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity(name = "usr")
 @Data
@@ -18,6 +20,12 @@ public class UserEntity {
     private String lastName;
     private String email;
     private String passwordHash;
+
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "usr_task",

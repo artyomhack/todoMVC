@@ -9,6 +9,7 @@ import com.artyomhack.todo.model.user.UserItem;
 import com.artyomhack.todo.model.user.UserRequest;
 import com.artyomhack.todo.repository.TaskRepository;
 import com.artyomhack.todo.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -20,14 +21,18 @@ public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
     private final TaskRepository taskRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, TaskRepository taskRepository) {
+    public UserServiceImpl(UserRepository userRepository, TaskRepository taskRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.taskRepository = taskRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public UserData create(UserRequest request) {
+        request.setPasswordHash(passwordEncoder.encode(request.getPasswordHash()));
+        System.out.println(request);
         return toData(userRepository.save(UserEntity.of(request)));
     }
 
@@ -92,6 +97,19 @@ public class UserServiceImpl implements UserService{
 
         taskRepository.deleteById(task.getId());
     }
+
+    @Override
+    public UserData findByUsername(String email) {
+        return null;
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+      return StreamSupport
+              .stream(userRepository.findAll().spliterator(), false)
+              .anyMatch(it -> it.getEmail().contains(email));
+    }
+
 
     private UserData toData(UserEntity entity) {
         return new UserData(

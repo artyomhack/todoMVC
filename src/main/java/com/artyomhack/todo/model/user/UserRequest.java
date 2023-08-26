@@ -15,4 +15,7 @@ public class UserRequest {
     private String email;
     private String passwordHash;
     private List<TaskItem> tasks;
+
+    public UserRequest() {
+    }
 }
