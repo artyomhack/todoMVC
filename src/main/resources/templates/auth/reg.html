@@ -8,7 +8,7 @@
 <body>
 <h2>Registration</h2>
 <div class="menu">
-    <form method="POST" th:action="@{/auth/reg}">
+    <form method="POST" th:action="@{/reg}">
         <div class="menu"  >
             <input type="text" placeholder="First name" name="firstName" th:value="${firstName}"/>
             </br>
@@ -23,7 +23,7 @@
             </br>
             </br>
             <div>
-                <button class="floating-button-a" type="submit">save</button>
+                <input type="submit" value="Sign In"/>
             </div>
         </div>
     </form>

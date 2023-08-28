@@ -1,7 +1,9 @@
 package com.artyomhack.todo.service.user;
 
+import com.artyomhack.todo.common.value.exception.DomainException;
 import com.artyomhack.todo.entity.TaskEntity;
 import com.artyomhack.todo.entity.UserEntity;
+import com.artyomhack.todo.entity.enums.Role;
 import com.artyomhack.todo.model.task.TaskItem;
 import com.artyomhack.todo.model.task.TaskRequest;
 import com.artyomhack.todo.model.user.UserData;
@@ -9,6 +11,8 @@ import com.artyomhack.todo.model.user.UserItem;
 import com.artyomhack.todo.model.user.UserRequest;
 import com.artyomhack.todo.repository.TaskRepository;
 import com.artyomhack.todo.repository.UserRepository;
+import org.apache.catalina.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +36,9 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserData create(UserRequest request) {
         request.setPasswordHash(passwordEncoder.encode(request.getPasswordHash()));
-        System.out.println(request);
-        return toData(userRepository.save(UserEntity.of(request)));
+        var user = UserEntity.of(request);
+        user.setRole(Role.USER);
+        return toData(userRepository.save(user));
     }
 
     @Override
@@ -99,17 +104,20 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserData findByUsername(String email) {
-        return null;
-    }
-
-    @Override
     public boolean existsByEmail(String email) {
       return StreamSupport
               .stream(userRepository.findAll().spliterator(), false)
               .anyMatch(it -> it.getEmail().contains(email));
     }
 
+    @Override
+    public UserData loadByEmail(String email) {
+        return StreamSupport.stream(userRepository.findAll().spliterator(), false)
+                .findFirst()
+                .filter(it -> existsByEmail(it.getEmail()))
+                .map(this::toData)
+                .orElseThrow(() -> new UsernameNotFoundException("Email not found."));
+    }
 
     private UserData toData(UserEntity entity) {
         return new UserData(
@@ -117,8 +125,12 @@ public class UserServiceImpl implements UserService{
                  entity.getFirstName() + " " + entity.getLastName(),
                  entity.getEmail(),
                  entity.getTasks().stream().map(it ->
-                         new TaskItem(it.getId(), it.getTitle(),
-                                      it.getDescription(), it.getDate())
+                         new TaskItem(
+                                 it.getId(),
+                                 it.getTitle(),
+                                 it.getDescription(),
+                                 it.getDate()
+                         )
                  ).toList()
          );
     }

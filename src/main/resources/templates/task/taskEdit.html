@@ -7,7 +7,7 @@
 </head>
 <body>
 <div class="menu">
-    <form method="POST" th:action=@{/task/update/{id}(id=${task.getId})} th:object="${task}">
+    <form method="POST" th:action="@{/task/update/{id}(id=${task.getId})}" th:object="${task}">
 
             <input type="text" placeholder="Title" name="title" th:value="${task.title}"/>
             <br/>

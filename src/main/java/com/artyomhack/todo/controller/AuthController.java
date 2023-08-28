@@ -2,39 +2,56 @@ package com.artyomhack.todo.controller;
 
 import com.artyomhack.todo.model.user.UserRequest;
 import com.artyomhack.todo.service.user.UserService;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/auth")
 public class AuthController {
 
     private final UserService userService;
+    private final AuthenticationManager authenticationManager;
 
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager) {
         this.userService = userService;
+        this.authenticationManager = authenticationManager;
     }
 
     @GetMapping("/login")
-    public String getLogin() {
+    public String getSHowLogin(){
         return "login";
     }
 
-    //Post -> login
+    @PostMapping("/auth/login")
+    public String login(@RequestParam("email") String email, @RequestParam("passwordHash") String passwordHash) {
+        System.out.printf("EMAIL: %s\n PASSHASH: %s \n", email, passwordHash);
+        try {
+            var user = userService.loadByEmail(email);
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            email, passwordHash
+                    )
+            );
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return "redirect:/user/" + user.getId();
+        } catch (AuthenticationException e) {
+            return "redirect:/login?error";
+        }
+    }
 
     @GetMapping("/reg")
     private String showRegisterForm() {
-        return "reg";
+        return "/auth/reg";
     }
 
     @PostMapping("/reg")
     public String registerUser(UserRequest request) {
         if (!userService.existsByEmail(request.getEmail())) {
-            System.out.println("CONTROLLER" + request);
             userService.create(request);
             return "redirect:/login";
         }

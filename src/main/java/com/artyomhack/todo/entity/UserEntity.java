@@ -21,10 +21,10 @@ public class UserEntity {
     private String email;
     private String passwordHash;
 
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
-    private Set<Role> roles;
+    private List<Role> roles = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -78,6 +78,10 @@ public class UserEntity {
                         new TaskEntity(it.getId(), it.getTitle(), it.getDescription())
                 ).toList()
         );
+    }
+
+    public void setRole(Role role) {
+        this.roles.add(role);
     }
 
     public void addTask(TaskEntity entity) {

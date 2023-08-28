@@ -1,5 +1,6 @@
 package com.artyomhack.todo.service.user;
 
+import com.artyomhack.todo.entity.UserEntity;
 import com.artyomhack.todo.model.task.TaskRequest;
 import com.artyomhack.todo.model.user.UserData;
 import com.artyomhack.todo.model.user.UserItem;
@@ -18,6 +19,6 @@ public interface UserService {
     boolean deleteById(Long id);
     UserData addTaskByUserId(Long id, TaskRequest taskRequest);
     void deleteTaskByIdFromUserById(Long taskId, Long userId);
-    UserData findByUsername(String username);
     boolean existsByEmail(String email);
+    UserData loadByEmail(String email);
 }
